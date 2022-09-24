@@ -13,13 +13,13 @@ struct cell {
     int speed = 10;
 
     cell(){
-        x=rand()%10000;
-        y=rand()%10000;
+        x=rand()%100;
+        y=rand()%100;
     }
 
     int move(){
-        x += rand()%speed;
-        y += rand()%speed;
+        x += rand()%speed-5;
+        y += rand()%speed-5;
         return 0;
     }
 
@@ -34,6 +34,7 @@ struct cell {
  forward_list<cell>  cells;
 
  int init(){
+    //gui::init(100,100);
     cells.push_front(cell());
     //cells.push_front(cell());
     //cells.push_front(cell());
@@ -42,6 +43,8 @@ struct cell {
 
 int main(){
     init();//初始化
+    gui::init(100,100);
+    cout << "hello" << std::endl;
     //模拟循环
     while(1){
         for(auto& x:cells){
