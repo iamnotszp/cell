@@ -16,7 +16,7 @@ namespace gui{
         }
         
         std::cout << SDL_GetError() << "no fail" << std::endl;
-        renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE);
+        renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
         return 0;
     }
     /// @brief draw a point

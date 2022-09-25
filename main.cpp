@@ -1,4 +1,5 @@
 #include <forward_list>
+#include <list>
 #include <random>
 #include <iostream>
 #include "gui.hpp"
@@ -10,16 +11,17 @@ const int width = 1000;
 const int height = 500;
 const int CELL_NUMBER = 1000;
 random_device rd;
+mt19937 gen{rd()}; 
+int speed = 5;
+uniform_int_distribution<int> dis{-speed,speed};
 
 struct cell {
     int x,y;
     int strength,blood;
     int speed = 5;
-    mt19937 gen{rd()};
-    uniform_int_distribution<int> dis{0,speed};
+
 
     cell(){
-        speed = speed * 2;//保证speed为偶数
         x=rand()%100;
         y=rand()%100;
     }
@@ -27,22 +29,31 @@ struct cell {
     int move(){
         //x += (rand()%speed-speed/2+1);
         //y += (rand()%speed-speed/2);
-        x += speed * dis(gen);
-        y += speed * dis(gen);
+        x += dis(gen);
+        y += dis(gen);
         x = x%width;
         y = y%height;
         return 0;
     }
 
-    void  draw(){
+    const void  draw(){
         //cout << "x: " << x<< "y:" << y << endl;
         gui::drawPoint(x,y);
+    }
+
+    bool die() const{
+        if(x>=500 && y>=400){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     };
 
  /// @brief 细胞家族
- forward_list<cell>  cells;
+ list<cell>  cells;
 
  int init(){
     gui::init(width,height);
@@ -55,14 +66,20 @@ struct cell {
     return 0;
  }
 
+bool die(const cell& cell){
+    return cell.die();
+}
+
 int main(){
     init();//初始化
     //模拟循环
     while(1){
         gui::drawBackground();
         for(auto& x:cells){
+            
             x.move();
             x.draw();
+            if(x.die()){cells.remove_if(die);}
         }
         gui::present();
     }
