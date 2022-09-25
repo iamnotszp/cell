@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include "gui.hpp"
 #include <iostream>
 
 
@@ -8,9 +9,14 @@ namespace gui{
     SDL_Renderer* renderer;
     int init(int width,int height){
         if(SDL_Init(SDL_INIT_EVERYTHING) != 0){std::cout << "SDL init失败，原因自己找"<< SDL_GetError() <<std::endl;};
-        SDL_Window* window= SDL_CreateWindow("cell",0,0,width,height,SDL_WINDOW_SHOWN);
-        std::cout << SDL_GetError() << std::endl;
-        renderer = SDL_CreateSoftwareRenderer(SDL_GetWindowSurface(window));
+        SDL_Window* window= SDL_CreateWindow("cells",10,10,width,height,SDL_WINDOW_SHOWN);
+        if (window == nullptr)
+        {
+            return 0;
+        }
+        
+        std::cout << SDL_GetError() << "no fail" << std::endl;
+        renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE);
         return 0;
     }
     /// @brief draw a point
@@ -20,8 +26,11 @@ namespace gui{
     int drawPoint(int x,int y){
         SDL_SetRenderDrawColor(renderer,255,0,0,0);
         SDL_RenderDrawPoint(renderer,x,y);
-        SDL_SetRenderDrawColor(renderer,255,255,0,0);
-        SDL_RenderFillRect(renderer,NULL);
+        return 0;
+    }
+
+    int present(){
+        SDL_RenderPresent(renderer);
         return 0;
     }
 

@@ -6,6 +6,9 @@
 
 using namespace std;
 
+const int width = 1000;
+const int height = 500;
+const int CELL_NUMBER = 100;
 
 struct cell {
     int x,y;
@@ -13,13 +16,16 @@ struct cell {
     int speed = 10;
 
     cell(){
+        speed = speed * 2;//保证speed为偶数
         x=rand()%100;
         y=rand()%100;
     }
 
     int move(){
-        x += rand()%speed-5;
-        y += rand()%speed-5;
+        x += (rand()%speed-speed/2+1);
+        y += (rand()%speed-speed/2+1);
+        x = x%width;
+        y = y%height;
         return 0;
     }
 
@@ -34,23 +40,27 @@ struct cell {
  forward_list<cell>  cells;
 
  int init(){
-    //gui::init(100,100);
-    cells.push_front(cell());
+    gui::init(width,height);
     //cells.push_front(cell());
     //cells.push_front(cell());
+    //cells.push_front(cell());
+    for(int i = 0;i < CELL_NUMBER ;i++){
+        cells.push_front(cell());
+    }
     return 0;
  }
 
 int main(){
     init();//初始化
-    gui::init(100,100);
     cout << "hello" << std::endl;
     //模拟循环
     while(1){
+        gui::drawBackground();
         for(auto& x:cells){
             x.move();
             x.draw();
         }
+        gui::present();
     }
     return 0;
 }
