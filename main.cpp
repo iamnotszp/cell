@@ -8,12 +8,15 @@ using namespace std;
 
 const int width = 1000;
 const int height = 500;
-const int CELL_NUMBER = 100;
+const int CELL_NUMBER = 1000;
+random_device rd;
 
 struct cell {
     int x,y;
     int strength,blood;
-    int speed = 10;
+    int speed = 5;
+    mt19937 gen{rd()};
+    uniform_int_distribution<int> dis{0,speed};
 
     cell(){
         speed = speed * 2;//保证speed为偶数
@@ -22,8 +25,10 @@ struct cell {
     }
 
     int move(){
-        x += (rand()%speed-speed/2+1);
-        y += (rand()%speed-speed/2+1);
+        //x += (rand()%speed-speed/2+1);
+        //y += (rand()%speed-speed/2);
+        x += speed * dis(gen);
+        y += speed * dis(gen);
         x = x%width;
         y = y%height;
         return 0;
@@ -52,7 +57,6 @@ struct cell {
 
 int main(){
     init();//初始化
-    cout << "hello" << std::endl;
     //模拟循环
     while(1){
         gui::drawBackground();
