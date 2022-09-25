@@ -12,8 +12,13 @@ const int height = 500;
 const int CELL_NUMBER = 1000;
 random_device rd;
 mt19937 gen{rd()}; 
-int speed = 5;
+int speed = 50;
 uniform_int_distribution<int> dis{-speed,speed};
+struct cell;
+
+ /// @brief 细胞家族
+ list<cell>  cells;
+
 
 struct cell {
     int x,y;
@@ -42,7 +47,7 @@ struct cell {
     }
 
     bool die() const{
-        if(x>=500 && y>=400){
+        if(x>=500 || y>=400 || cells.size()*dis(gen)/speed>20000){
             return true;
         }
         else{
@@ -50,10 +55,19 @@ struct cell {
         }
     }
 
+    int breed(){
+        int 限制 = 2;//经测试，为四会逐渐减少，为三会有波动，主要维持在1000左右
+        int n = rd()%200>限制?1:0;
+        //int n =1;
+        //int n = 3;
+        for(int i = 0;i < n;i ++ ){
+            cells.push_front(cell());
+        }
+        return n;
+    }
+
     };
 
- /// @brief 细胞家族
- list<cell>  cells;
 
  int init(){
     gui::init(width,height);
@@ -66,6 +80,14 @@ struct cell {
     return 0;
  }
 
+//template<typename T> bool die(T this){
+//    return this.die;
+//}
+
+//bool die(auto x){
+//    return x.die():
+//}
+
 bool die(const cell& cell){
     return cell.die();
 }
@@ -75,14 +97,18 @@ int main(){
     //模拟循环
     while(1){
         gui::drawBackground();
-        for(auto& x:cells){
+        for(auto i = cells.begin();i != cells.end();i++){
             
-            x.move();
-            x.draw();
-            if(x.die()){cells.remove_if(die);}
+            i->move();
+            i->draw();
+            i->breed();
+            //if(i->die())cells.erase(i);
         }
+        cells.remove_if(die);
+        cout << cells.size() << endl;
         gui::present();
     }
+
     return 0;
 }
 
